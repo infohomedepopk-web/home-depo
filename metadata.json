@@ -1,0 +1,8 @@
+{
+  "name": "HOME DEPO - Online Store",
+  "description": "HOME DEPO - An Online Store For Your Home Improvement. RAKSON chemicals, paints, hardware, blinds and decor delivered to your doorstep.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
