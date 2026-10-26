@@ -1,0 +1,55 @@
+<svg width="1200" height="500" viewBox="0 0 1200 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bronzeGrad" x1="153" y1="112" x2="1040" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F5D7A6"/>
+      <stop offset="0.14" stop-color="#D9B07B"/>
+      <stop offset="0.3" stop-color="#B77A3D"/>
+      <stop offset="0.48" stop-color="#F2D0A0"/>
+      <stop offset="0.63" stop-color="#9D5D2D"/>
+      <stop offset="0.77" stop-color="#EAC28A"/>
+      <stop offset="1" stop-color="#7F4521"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="200" y1="130" x2="980" y2="410" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6D9A7"/>
+      <stop offset="0.12" stop-color="#D4A563"/>
+      <stop offset="0.3" stop-color="#8D552F"/>
+      <stop offset="0.46" stop-color="#F7E0B7"/>
+      <stop offset="0.6" stop-color="#A16031"/>
+      <stop offset="0.76" stop-color="#F0C98A"/>
+      <stop offset="1" stop-color="#6B3D1F"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#1d130d" flood-opacity="0.42"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <path d="M146 170L251 90H518L624 170L732 90H986L888 187H785L740 188L675 250L598 220H386L310 253L247 192H146V170Z" fill="url(#bronzeGrad)"/>
+    <path d="M266 186L376 117H486L557 180L571 188L461 220H362L266 186Z" fill="#5B331D" opacity="0.46"/>
+
+    <path d="M466 96H518L628 178H528L466 96Z" fill="#572E1A" opacity="0.72"/>
+    <path d="M578 95H724L708 170H618L578 95Z" fill="#5D3018" opacity="0.52"/>
+
+    <rect x="330" y="157" width="162" height="129" rx="10" fill="#5B371F" opacity="0.8"/>
+    <path d="M348 160H470V279H348V160Z" fill="url(#bronzeGrad)"/>
+    <rect x="356" y="178" width="112" height="99" rx="7" fill="#D3A261" opacity="0.24"/>
+    <path d="M382 246V210H438V246H382ZM392 220V231H428V220H392Z" fill="#3B2417" opacity="0.7"/>
+    <rect x="409" y="167" width="24" height="58" rx="6" fill="#4C2A18"/>
+
+    <path d="M138 196H244C273 196 285 187 293 173L344 110H415L335 190H266L245 181H170L138 196Z" fill="#7C4723" opacity="0.8"/>
+
+    <g filter="url(#softShadow)">
+      <path d="M700 134C672 166 650 178 594 179H574L559 208C540 251 520 276 489 286C469 294 452 302 443 320L442 332C471 332 489 327 514 318C535 310 550 300 563 286L580 270L612 280L694 320L701 363C767 342 814 335 861 316C912 295 949 272 980 212C1008 155 982 102 928 90C883 80 763 102 700 134ZM829 145C864 146 890 161 903 191C916 221 905 254 881 278C857 302 813 314 767 314L722 314L767 215H815C827 216 838 208 839 196C840 179 836 159 829 145Z" fill="url(#bronzeGrad)"/>
+      <path d="M667 191H676L756 212L779 256L738 280L709 227L667 191Z" fill="#754A22" opacity="0.55"/>
+      <path d="M726 320C768 330 803 333 848 323C884 315 908 302 924 283L945 252C935 310 890 346 827 361C774 374 718 371 672 357L699 321L726 320Z" fill="#5C2F19" opacity="0.46"/>
+      <path d="M549 173C552 198 561 228 576 259L545 292C525 258 512 220 510 185L549 173Z" fill="#774725" opacity="0.65"/>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <text x="600" y="390" text-anchor="middle" font-size="156" font-weight="900" font-family="Arial Black, Impact, Segoe UI, sans-serif" letter-spacing="-6" fill="url(#textGrad)" stroke="#3B2113" stroke-width="5">HOME DEPO</text>
+  </g>
+</svg>
