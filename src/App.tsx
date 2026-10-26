@@ -102,7 +102,7 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: '300g Jar', weight: '300g', price: 950, image: getAssetUrl('/assets/rakson-sealant-300g.jpg') },
       { name: '1 Kg Bucket', weight: '1kg', price: 1900, image: getAssetUrl('/assets/rakson-sealant-1kg.jpg') },
       { name: '4 Kg Bucket', weight: '4kg', price: 6800, image: getAssetUrl('/assets/rakson-sealant-4kg.jpg') },
-      { name: '16 Kg Drum', weight: '16kg', price: 24500, image: getAssetUrl('/assets/rakson-sealant-16kg.jpg') }
+      { name: '16 Kg Drum', weight: '16kg', price: 24500, image: getAssetUrl('/assets/rakson-sealant-4kg.jpg') }
     ]
   },
   {
