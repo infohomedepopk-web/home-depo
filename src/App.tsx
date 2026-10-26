@@ -34,7 +34,7 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   title: string;
-  category: 'Building Chemicals' | 'Paints' | 'Hardware' | 'Curtains & Blinds' | 'Wall Decoration';
+  category: 'Building Chemicals' | 'Paints' | 'Hardware' | 'Windows Blinds' | 'Wall Decoration';
   priceType: 'fixed' | 'ask_price';
   basePrice?: number; // for fixed
   variants?: ProductVariant[];
@@ -65,7 +65,7 @@ const CATEGORIES = [
   'Building Chemicals',
   'Paints',
   'Hardware',
-  'Curtains & Blinds',
+  'Windows Blinds',
   'Wall Decoration'
 ] as const;
 
@@ -102,11 +102,11 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: '300g Jar', weight: '300g', price: 950, image: getAssetUrl('/assets/rakson-sealant-300g.jpg') },
       { name: '1 Kg Bucket', weight: '1kg', price: 1900, image: getAssetUrl('/assets/rakson-sealant-1kg.jpg') },
       { name: '4 Kg Bucket', weight: '4kg', price: 6800, image: getAssetUrl('/assets/rakson-sealant-4kg.jpg') },
-      { name: '16 Kg Drum', weight: '16kg', price: 24500, image: getAssetUrl('/assets/rakson-sealant-4kg.jpg') }
+      { name: '16 Kg Drum', weight: '16kg', price: 24500, image: getAssetUrl('/assets/rakson-sealant-16kg.jpg') }
     ]
   },
   {
-    id: 'rakson-roof-coat-7000',
+    id: 'rakson-roof-coat',
     title: 'RAKSON Roof Coat (Water Proof & Heat Proof Coating - 7000 Series)',
     category: 'Building Chemicals',
     priceType: 'fixed',
@@ -123,7 +123,7 @@ const INITIAL_PRODUCTS: Product[] = [
     variants: [
       { name: '1 Kg Jar (Retail Rs 950)', weight: '1kg', price: 950, image: getAssetUrl('/assets/rakson-roof-coat-1kg.png') },
       { name: '4.5 Kg Bucket (Retail Rs 3,450)', weight: '4.5kg', price: 3450, image: getAssetUrl('/assets/rakson-roof-coat-4-5kg.png') },
-      { name: '18 Kg Drum (Retail Rs 23,500)', weight: '18kg', price: 23500, image: getAssetUrl('/assets/rakson-roof-coat-18kg.png') }
+      { name: '18 Kg Drum (Retail Rs 13,500)', weight: '18kg', price: 23500, image: getAssetUrl('/assets/rakson-roof-coat-18kg.png') }
     ]
   },
   {
