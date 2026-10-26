@@ -123,7 +123,7 @@ const INITIAL_PRODUCTS: Product[] = [
     variants: [
       { name: '1 Kg Jar (Retail Rs 950)', weight: '1kg', price: 950, image: getAssetUrl('/assets/rakson-roof-coat-1kg.png') },
       { name: '4.5 Kg Bucket (Retail Rs 3,450)', weight: '4.5kg', price: 3450, image: getAssetUrl('/assets/rakson-roof-coat-4-5kg.png') },
-      { name: '18 Kg Drum (Retail Rs 13,500)', weight: '18kg', price: 23500, image: getAssetUrl('/assets/rakson-roof-coat-18kg.png') }
+      { name: '18 Kg Drum (Retail Rs 13,500)', weight: '18kg', price: 13500, image: getAssetUrl('/assets/rakson-roof-coat-18kg.png') }
     ]
   },
   {
