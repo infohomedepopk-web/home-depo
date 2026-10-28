@@ -106,24 +106,24 @@ const INITIAL_PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'sbr-bonding-chemical',
-    title: 'SBR Chemical / SBR Bonding Agent',
+    id: 'rakson-sbr-chemical',
+    title: 'RAKSON Chemicals SBR – The Ultimate Solution for Strong Construction and Waterproofing',
     category: 'Building Chemicals',
     priceType: 'fixed',
-    basePrice: 2800,
-    badge: 'High Strength Bonding',
+    basePrice: 1200,
+    badge: '100% Powerful',
     image: '',
-    description: 'Premium SBR liquid polymer bonding agent for cement, mortar, plaster, tile fixing, waterproofing, and concrete repair. Improves adhesion, flexibility, and endurance for interior and exterior construction work.',
+    description: 'If you are looking for maximum durability, strength, and superior waterproofing for your construction and renovation projects, RAKSON Chemicals SBR is your ideal choice. It significantly enhances adhesion between cement and concrete, providing long-lasting structural integrity and a protective barrier against water seepage and moisture.',
     features: [
-      'Excellent adhesion for cement and mortar',
-      'Improves flexibility and crack resistance',
-      'Suitable for plaster repair and tile works',
-      'Ideal for waterproofing and renovation projects'
+      'Superior Bonding & Strength for cement and concrete',
+      'Advanced Waterproofing against seepage and moisture',
+      'Crack Resistance for flexible mortar and concrete mixes',
+      'Easy Application for professional construction and repair work',
+      'Ideal for roofs, basements, walls, and renovation projects'
     ],
     variants: [
-      { name: '1 Litre', weight: '1L', price: 1200, image: '' },
-      { name: '5 Litres', weight: '5L', price: 5200, image: '' },
-      { name: '20 Litres', weight: '20L', price: 19500, image: '' }
+      { name: '1 Litre Pack', weight: '1L', price: 1200, image: '' },
+      { name: '5 Litres Pack', weight: '5L', price: 5200, image: '' }
     ]
   },
   {
@@ -292,7 +292,8 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({
     'rakson-sealant': 1,
-    'rakson-roof-coat-7000': 0
+    'rakson-sbr-chemical': 0,
+    'rakson-roof-coat': 0
   });
   const [customerName, setCustomerName] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
