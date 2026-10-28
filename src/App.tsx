@@ -112,7 +112,7 @@ const INITIAL_PRODUCTS: Product[] = [
     priceType: 'fixed',
     basePrice: 1200,
     badge: '100% Powerful',
-    image: '',
+    image: getAssetUrl('/assets/rakson-sbr-1l.jpg'),
     description: 'If you are looking for maximum durability, strength, and superior waterproofing for your construction and renovation projects, RAKSON Chemicals SBR is your ideal choice. It significantly enhances adhesion between cement and concrete, providing long-lasting structural integrity and a protective barrier against water seepage and moisture.',
     features: [
       'Superior Bonding & Strength for cement and concrete',
@@ -122,8 +122,8 @@ const INITIAL_PRODUCTS: Product[] = [
       'Ideal for roofs, basements, walls, and renovation projects'
     ],
     variants: [
-      { name: '1 Litre Pack', weight: '1L', price: 1200, image: '' },
-      { name: '5 Litres Pack', weight: '5L', price: 5200, image: '' }
+      { name: '1 Litre Pack', weight: '1L', price: 1200, image: getAssetUrl('/assets/rakson-sbr-1l.jpg') },
+      { name: '5 Litres Pack', weight: '5L', price: 5200, image: getAssetUrl('/assets/rakson-sbr-5l.jpg') }
     ]
   },
   {
