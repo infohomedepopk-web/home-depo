@@ -123,7 +123,7 @@ const INITIAL_PRODUCTS: Product[] = [
     ],
     variants: [
       { name: '1 Litre Pack', weight: '1L', price: 1250, image: getAssetUrl('/assets/rakson-sbr-1-litter-1250.jpg') },
-      { name: '5 Litres Pack', weight: '5L', price: 5850, image: getAssetUrl('/assets/rakson-sbr-5-letter-5850.jpg') }
+      { name: '5 Litres Pack', weight: '5L', price: 5850, image: getAssetUrl('/assets/rakson-sbr-5 litter-5850.jpg') }
     ]
   },
   {
