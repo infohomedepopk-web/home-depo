@@ -14,9 +14,66 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      .hd-payment { margin-top: 14px; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; background: #f8faf9; color: #111827; font: 13px/1.5 system-ui, sans-serif; }
+      .hd-payment h3 { margin: 0 0 8px; color: #0b3d26; font-size: 15px; font-weight: 800; }
+      .hd-payment p { margin: 5px 0; }
+      .hd-payment-method { margin-top: 10px; padding: 10px; border-radius: 9px; background: #fff; border: 1px solid #e5e7eb; }
+      .hd-payment-title { font-weight: 700; color: #0b3d26; }
+      .hd-payment button { border: 0; border-radius: 6px; padding: 4px 8px; margin-left: 5px; background: #e8f5ee; color: #0b3d26; font-weight: 700; cursor: pointer; }
+      .hd-payment .hd-note { margin-top: 10px; color: #4b5563; }
+      .hd-payment .hd-whatsapp { display: inline-block; margin: 8px 0 0; padding: 9px 12px; border-radius: 8px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
+    </style>
   </head>
   <body class="bg-gray-50 text-gray-900 antialiased selection:bg-[#13A163]/20 selection:text-[#007fff]">
     <div id="root"></div>
+    <script>
+      (() => {
+        const addPaymentInstructions = () => {
+          const root = document.getElementById('root');
+          if (!root || root.querySelector('.hd-payment')) return;
+          const subtotal = Array.from(root.querySelectorAll('p')).find((node) => node.textContent.trim().startsWith('Subtotal:'));
+          if (!subtotal) return;
+          const panel = document.createElement('section');
+          panel.className = 'hd-payment';
+          panel.setAttribute('aria-label', 'Payment instructions');
+          panel.innerHTML = `
+            <h3>Payment options</h3>
+            <div class="hd-payment-method">
+              <div class="hd-payment-title"><span aria-hidden="true">💸</span> JazzCash</div>
+              <p>Send payment to: <strong>03005573725</strong>
+                <button type="button" data-copy="03005573725" aria-label="Copy JazzCash number">Copy</button>
+              </p>
+              <p>Account title: <strong>HOME DEPO</strong></p>
+            </div>
+            <div class="hd-payment-method">
+              <div class="hd-payment-title"><span aria-hidden="true">🏦</span> Allied Bank transfer</div>
+              <p>Account title: <strong>HOME DEPO</strong></p>
+              <p>IBAN: <strong>PK35ABPA0010024199700016</strong>
+                <button type="button" data-copy="PK35ABPA0010024199700016" aria-label="Copy Allied Bank IBAN">Copy</button>
+              </p>
+              <p>Receiver: Khalid Mehmood</p>
+              <p>Shop No 8, Sadiq Plaza, PWD Housing Society, Islamabad.</p>
+            </div>
+            <p class="hd-note">Payment bhejne ke baad screenshot WhatsApp par share karein. Hamari team payment verify karke aapka order confirm aur dispatch karegi. Delivery charges team confirm karegi.</p>
+            <a class="hd-whatsapp" href="https://wa.me/923421234789?text=Hello%20HOME%20DEPO%2C%20I%20have%20sent%20the%20payment.%20I%20will%20share%20the%20payment%20screenshot%20here.%20Please%20confirm%20my%20order." target="_blank" rel="noopener noreferrer">Send payment screenshot on WhatsApp</a>
+          `;
+          subtotal.insertAdjacentElement('afterend', panel);
+        };
+        new MutationObserver(addPaymentInstructions).observe(document.getElementById('root'), { childList: true, subtree: true });
+        document.addEventListener('click', async (event) => {
+          const button = event.target.closest('[data-copy]');
+          if (!button) return;
+          try {
+            await navigator.clipboard.writeText(button.dataset.copy);
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = 'Copy'; }, 1500);
+          } catch {
+            window.prompt('Copy this payment detail:', button.dataset.copy);
+          }
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
