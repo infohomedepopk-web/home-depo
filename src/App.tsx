@@ -42,6 +42,7 @@ const WHATSAPP = 'https://wa.me/923421234789';
 const asset = (path: string) => `${import.meta.env.BASE_URL || './'}${path.replace(/^\//, '')}`;
 const categories: CategoryType[] = ['All Categories', 'Building Chemicals', 'Paints', 'Hardware', 'Windows Blinds', 'Wall Decoration'];
 const chemicalImage = asset('/assets/building-chemicals.jpg');
+const elasto50Image = asset('/assets/elasto-50-home-page.png');
 const products: Product[] = [
   {
     id: 'rakson-sealant', title: 'RAKSON Anti-Leakage Sealant', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1900, badge: 'Waterproofing', image: chemicalImage,
@@ -74,7 +75,7 @@ const products: Product[] = [
     ]
   },
   {
-    id: 'rakson-elasto-50', title: 'RAKSON ELASTO-50 Flexible Polymer Membrane', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1350, badge: 'New Product', image: chemicalImage,
+    id: 'rakson-elasto-50', title: 'RAKSON ELASTO-50', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1350, badge: 'Flexible Polymer Membrane', image: elasto50Image,
     description: 'RAKSON ELASTO-50 is described on its packaging as a flexible polymer membrane for roofs, exterior walls, and concrete, intended to help waterproof and protect surfaces. The label also describes an ultra-soft finish and easy application. Use only as directed on the container; coverage, preparation, number of coats, and drying time are not specified here and should be confirmed with the seller or product label.',
     features: ['Label identifies it as a flexible polymer membrane', 'For roofs, exterior walls, and concrete, as stated on the label', 'Packaging highlights a soft finish and easy application', 'Use package directions for surface preparation and application'],
     specs: [
@@ -87,9 +88,9 @@ const products: Product[] = [
       { label: 'Coverage / application', value: 'Confirm on the container or with the seller' }
     ],
     variants: [
-      { name: '1 Litre - Cameo 1008', weight: '1L', price: 1350, image: chemicalImage },
-      { name: '4 Litre - Cameo 1008', weight: '4L', price: 4800, image: chemicalImage },
-      { name: '16 Litre - Cameo 1008', weight: '16L', price: 18500, image: chemicalImage }
+      { name: '1 Litre - Cameo 1008', weight: '1L', price: 1350, image: asset('/assets/elasto-50-weight-1-ltr-price-rs-1350.png') },
+      { name: '4 Litre - Cameo 1008', weight: '4L', price: 4800, image: asset('/assets/elasto-50-weight-4-ltr-price-rs-4800.png') },
+      { name: '16 Litre - Cameo 1008', weight: '16L', price: 18500, image: asset('/assets/elasto-50-weight-16-ltr-price-rs-18500.png') }
     ]
   },
   {
