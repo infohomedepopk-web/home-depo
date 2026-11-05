@@ -1,5 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, CheckCircle2, MessageCircle, Minus, Plus, Search, ShoppingCart, Trash2, X } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import {
+  Search, ShoppingCart, X, Plus, Minus, Trash2, Check, ShieldCheck, Truck,
+  PhoneCall, Sparkles, Eye, MessageCircle, PackageCheck, CheckCircle2
+} from 'lucide-react';
 
 interface ProductVariant {
   name: string;
@@ -7,45 +10,37 @@ interface ProductVariant {
   price: number;
   image: string;
 }
-
-type CategoryType = 'All Categories' | 'Building Chemicals' | 'Paints' | 'Hardware' | 'Windows Blinds' | 'Wall Decoration';
 interface Product {
   id: string;
   title: string;
-  category: Exclude<CategoryType, 'All Categories'>;
-  description: string;
-  features: string[];
-  image: string;
-  variants?: ProductVariant[];
+  category: 'Building Chemicals' | 'Paints' | 'Hardware' | 'Windows Blinds' | 'Wall Decoration';
   priceType: 'fixed' | 'ask_price';
   basePrice?: number;
+  variants?: ProductVariant[];
+  image?: string;
   badge?: string;
+  description: string;
+  features: string[];
   specs?: { label: string; value: string }[];
 }
 interface CartItem {
   id: string;
   productId: string;
   title: string;
+  category: string;
   variantName?: string;
   price: number;
-  image: string;
+  image?: string;
   quantity: number;
-}
-interface StoreHistoryState {
-  homeDepo: true;
-  category: CategoryType;
-  search: string;
-  productId?: string;
 }
 
 const WHATSAPP = 'https://wa.me/923421234789';
+const CATEGORIES = ['All Categories', 'Building Chemicals', 'Paints', 'Hardware', 'Windows Blinds', 'Wall Decoration'] as const;
+type CategoryType = typeof CATEGORIES[number];
 const asset = (path: string) => `${import.meta.env.BASE_URL || './'}${path.replace(/^\//, '')}`;
-const categories: CategoryType[] = ['All Categories', 'Building Chemicals', 'Paints', 'Hardware', 'Windows Blinds', 'Wall Decoration'];
-const chemicalImage = asset('/assets/building-chemicals.jpg');
-const elasto50Image = asset('/assets/elasto-50-home-page.png');
 const products: Product[] = [
   {
-    id: 'rakson-sealant', title: 'RAKSON Anti-Leakage Sealant', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1900, badge: 'Waterproofing', image: chemicalImage,
+    id: 'rakson-sealant', title: 'RAKSON Anti-Leakage Sealant', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1900, badge: 'Waterproofing', image: asset('/assets/building-chemicals.jpg'),
     description: 'A multipurpose sealant for common household waterproofing and leakage repair applications. Confirm the suitable surface and application method with the product label before use.',
     features: ['For selected leakage and sealing applications', 'Check surface compatibility before applying', 'Follow the package instructions'],
     variants: [
@@ -75,8 +70,8 @@ const products: Product[] = [
     ]
   },
   {
-    id: 'rakson-elasto-50', title: 'RAKSON ELASTO-50', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1350, badge: 'Flexible Polymer Membrane', image: elasto50Image,
-    description: 'RAKSON ELASTO-50 is described on its packaging as a flexible polymer membrane for roofs, exterior walls, and concrete, intended to help waterproof and protect surfaces. The label also describes an ultra-soft finish and easy application. Use only as directed on the container; coverage, preparation, number of coats, and drying time are not specified here and should be confirmed with the seller or product label.',
+    id: 'rakson-elasto-50', title: 'RAKSON ELASTO-50', category: 'Building Chemicals', priceType: 'fixed', basePrice: 1350, badge: 'Flexible Polymer Membrane', image: asset('/assets/elasto-50-home-page.png'),
+    description: 'RAKSON ELASTO-50 is described on its packaging as a flexible polymer membrane for roofs, exterior walls, and concrete, intended to help waterproof and protect surfaces. Use only as directed on the container; confirm coverage and application details on the label or with the seller.',
     features: ['Label identifies it as a flexible polymer membrane', 'For roofs, exterior walls, and concrete, as stated on the label', 'Packaging highlights a soft finish and easy application', 'Use package directions for surface preparation and application'],
     specs: [
       { label: 'Product type', value: 'Flexible polymer membrane (per product label)' },
@@ -95,16 +90,14 @@ const products: Product[] = [
   },
   {
     id: 'rakson-wall-emulsion', title: 'RAKSON Super Wall Emulsion (Interior Matt)', category: 'Paints', priceType: 'ask_price', badge: 'Matt Finish', image: asset('/assets/rakson-wall-emulsion.jpg'),
-    description: 'Interior wall emulsion paint. Ask the seller for available shades, pack sizes, coverage, and current price.',
-    features: ['Interior matt finish', 'Ask for current shades and pack sizes']
+    description: 'Interior wall emulsion paint. Ask the seller for available shades, pack sizes, coverage, and current price.', features: ['Interior matt finish', 'Ask for current shades and pack sizes']
   },
   {
-    id: 'wall-putty', title: 'Wall Putty', category: 'Paints', priceType: 'ask_price', badge: 'Surface Preparation', image: chemicalImage,
-    description: 'Wall putty for surface preparation before painting. Ask the seller to confirm suitable use, pack size, and application instructions.',
-    features: ['For wall surface preparation', 'Follow the product label for application']
+    id: 'wall-putty', title: 'Wall Putty', category: 'Paints', priceType: 'ask_price', badge: 'Surface Preparation', image: '',
+    description: 'Wall putty for surface preparation before painting. Ask the seller to confirm suitable use, pack size, and application instructions.', features: ['For wall surface preparation', 'Follow the product label for application']
   },
   {
-    id: 'hardware-door-handle', title: 'Modern Door Handle', category: 'Hardware', priceType: 'ask_price', badge: 'Door Hardware', image: asset('/assets/hardware-door-handle.jpg'),
+    id: 'hardware-door-handle', title: 'Modern Stainless Steel Door Handle', category: 'Hardware', priceType: 'ask_price', badge: 'Door Hardware', image: asset('/assets/hardware-door-handle.jpg'),
     description: 'Modern door handle. Contact us for finish, measurements, compatibility, and current price.', features: ['Ask for finish and fitting details']
   },
   {
@@ -133,138 +126,131 @@ const products: Product[] = [
   }
 ];
 
-const homeState: StoreHistoryState = { homeDepo: true, category: 'All Categories', search: '' };
-const toHistoryState = (category: CategoryType, search: string, productId?: string): StoreHistoryState => ({ homeDepo: true, category, search, ...(productId ? { productId } : {}) });
-
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({ 'rakson-sealant': 1, 'rakson-elasto-50': 0 });
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
-  // Keep category and product views in browser history so Back returns one view at a time.
-  useEffect(() => {
-    window.history.replaceState(homeState, '', window.location.href);
-    window.history.pushState(homeState, '', window.location.href);
-    const restoreView = (event: PopStateEvent) => {
-      const state = event.state as StoreHistoryState | null;
-      setSelectedCategory(state?.homeDepo ? state.category : 'All Categories');
-      setSearchQuery(state?.homeDepo ? state.search : '');
-      setSelectedProduct(state?.homeDepo && state.productId ? products.find((item) => item.id === state.productId) ?? null : null);
-      setIsCartOpen(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-    window.addEventListener('popstate', restoreView);
-    return () => window.removeEventListener('popstate', restoreView);
-  }, []);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({ 'rakson-sealant': 1, 'rakson-sbr-chemical': 0, 'rakson-roof-coat': 0, 'rakson-elasto-50': 0 });
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerCity, setCustomerCity] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return products.filter((product) => (selectedCategory === 'All Categories' || product.category === selectedCategory) && (!query || `${product.title} ${product.category} ${product.description}`.toLowerCase().includes(query)));
   }, [selectedCategory, searchQuery]);
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const navigate = (category: CategoryType, search = '', productId?: string) => {
-    setSelectedCategory(category);
-    setSearchQuery(search);
-    setSelectedProduct(productId ? products.find((item) => item.id === productId) ?? null : null);
-    window.history.pushState(toHistoryState(category, search, productId), '', window.location.href);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const cartTotal = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
+  const totalCartCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    window.setTimeout(() => setToastMessage(null), 2800);
   };
-  const openProduct = (product: Product) => navigate(selectedCategory, searchQuery, product.id);
-  const goBack = () => {
-    if (selectedProduct || selectedCategory !== 'All Categories' || searchQuery) {
-      window.history.back();
-      return;
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  const closeProduct = () => {
-    if (selectedProduct) window.history.back();
-    else setSelectedProduct(null);
-  };
-  const askOnWhatsApp = (product: Product, variant?: ProductVariant) => {
-    const details = variant ? ` (${variant.name}, PKR ${variant.price.toLocaleString()})` : '';
-    const message = encodeURIComponent(`Hello HOME DEPO! I am interested in ${product.title}${details}. Please confirm current availability, product instructions/specifications, and delivery charges.`);
-    window.open(`${WHATSAPP}?text=${message}`, '_blank', 'noopener,noreferrer');
-  };
-  const addToCart = (product: Product, index = selectedVariants[product.id] ?? 0) => {
-    const variant = product.variants?.[index];
+  const handleVariantChange = (productId: string, index: number) => setSelectedVariants((values) => ({ ...values, [productId]: index }));
+  const addToCart = (product: Product, variantIndex = selectedVariants[product.id] ?? 0) => {
+    const variant = product.variants?.[variantIndex];
     const id = variant ? `${product.id}-${variant.weight}` : product.id;
     setCart((items) => {
       const existing = items.find((item) => item.id === id);
-      return existing ? items.map((item) => item.id === id ? { ...item, quantity: item.quantity + 1 } : item) : [...items, { id, productId: product.id, title: product.title, variantName: variant?.name, price: variant?.price ?? product.basePrice ?? 0, image: variant?.image ?? product.image, quantity: 1 }];
+      if (existing) return items.map((item) => item.id === id ? { ...item, quantity: item.quantity + 1 } : item);
+      return [...items, { id, productId: product.id, title: product.title, category: product.category, variantName: variant?.name, price: variant?.price ?? product.basePrice ?? 0, image: variant?.image ?? product.image, quantity: 1 }];
     });
+    showToast(`Added ${product.title}${variant ? ` (${variant.weight})` : ''} to Cart!`);
   };
-  const setVariant = (productId: string, index: number) => setSelectedVariants((values) => ({ ...values, [productId]: index }));
-  const changeQuantity = (id: string, change: number) => setCart((items) => items.map((item) => item.id === id ? { ...item, quantity: item.quantity + change } : item).filter((item) => item.quantity > 0));
+  const updateQuantity = (id: string, delta: number) => setCart((items) => items.map((item) => item.id === id ? { ...item, quantity: item.quantity + delta } : item).filter((item) => item.quantity > 0));
+  const removeFromCart = (id: string) => setCart((items) => items.filter((item) => item.id !== id));
+  const handleWhatsAppCheckout = () => {
+    if (!cart.length) return;
+    const lines = cart.map((item, index) => `${index + 1}. *${item.title}*${item.variantName ? ` (${item.variantName})` : ''}\n   Qty: ${item.quantity} x PKR ${item.price.toLocaleString()} = PKR ${(item.price * item.quantity).toLocaleString()}`);
+    let message = `*HOME DEPO - NEW ORDER INQUIRY*\n_An Online Store For Your Home Improvement_\n\n*ORDER ITEMS:*\n${lines.join('\n')}\n\n*TOTAL AMOUNT:* PKR ${cartTotal.toLocaleString()} + Delivery\n`;
+    if (customerName || customerPhone || customerCity || customerAddress) {
+      message += '\n*CUSTOMER DETAILS:*\n';
+      if (customerName) message += `• Name: ${customerName}\n`;
+      if (customerPhone) message += `• Phone: ${customerPhone}\n`;
+      if (customerCity) message += `• City: ${customerCity}\n`;
+      if (customerAddress) message += `• Address: ${customerAddress}\n`;
+    }
+    message += '\nPlease confirm availability and delivery charges. Thank you!';
+    window.open(`${WHATSAPP}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+  const askPrice = (product: Product) => {
+    const message = `Hello HOME DEPO team! I am interested in *${product.title}* from your *${product.category}* section. Could you please share the current price, specifications, and delivery details.`;
+    window.open(`${WHATSAPP}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+  const directOrder = (product: Product, variant?: ProductVariant) => {
+    const details = variant ? ` (${variant.weight}) at PKR ${variant.price.toLocaleString()}` : '';
+    window.open(`${WHATSAPP}?text=${encodeURIComponent(`Hello HOME DEPO! I would like to order *${product.title}${details}*. Please share delivery time and payment process.`)}`, '_blank', 'noopener,noreferrer');
+  };
+  const selectCategoryAndScroll = (category: CategoryType) => {
+    setSelectedCategory(category);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAF9] text-gray-900 flex flex-col font-sans">
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3 justify-between">
-          <button onClick={() => navigate('All Categories')} className="font-black text-xl sm:text-2xl text-[#0B3D26]">HOME DEPO</button>
-          <div className="flex-1 max-w-md relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input aria-label="Search products" value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); window.history.replaceState(toHistoryState(selectedCategory, event.target.value, selectedProduct?.id), '', window.location.href); }} placeholder="Search products..." className="w-full pl-9 pr-3 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm" />
-          </div>
-          <button onClick={() => setIsCartOpen(true)} className="flex items-center gap-2 rounded-lg bg-[#0B3D26] text-white px-3 py-2"><ShoppingCart className="w-4 h-4" />Cart{itemCount > 0 ? ` (${itemCount})` : ''}</button>
-          <nav aria-label="Product categories" className="w-full flex gap-2 overflow-x-auto py-1">
-            {categories.map((category) => <button key={category} onClick={() => navigate(category)} className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold ${selectedCategory === category ? 'bg-[#0B3D26] text-white' : 'bg-gray-100 text-gray-700'}`}>{category}</button>)}
-          </nav>
+      <div className="bg-[#0B3D26] text-emerald-100 text-xs sm:text-sm py-2 px-4 border-b border-emerald-900/40">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2"><span className="inline-block w-2 h-2 rounded-full bg-[#13A163] animate-pulse" /><span className="font-medium">Pakistan-wide Delivery | Original RAKSON Sealants, Paints &amp; Home Decor</span></div>
+          <div className="hidden sm:flex items-center space-x-4 text-xs text-emerald-200"><a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center space-x-1"><MessageCircle className="w-3.5 h-3.5 text-[#13A163]" /><span>WhatsApp: +92 342 1234789</span></a><span>•</span><span>Delivery: 2-4 Days</span></div>
         </div>
+      </div>
+
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+          <div className="flex items-center justify-between gap-3 sm:gap-6">
+            <button type="button" className="flex items-center space-x-2.5 sm:space-x-3 text-left select-none group" onClick={() => { setSelectedCategory('All Categories'); setSearchQuery(''); }}>
+              <span className="h-10 sm:h-12 overflow-hidden rounded-lg border border-gray-300/80 bg-[#181c1f] p-0.5 shrink-0 flex items-center"><img src={asset('/assets/logo-home-depo.jpg')} alt="HOME DEPO Logo" className="h-full w-auto object-contain" /></span>
+              <span className="flex flex-col"><span className="text-lg sm:text-2xl font-black tracking-tight text-[#0B3D26] leading-none">HOME DEPO</span><span className="text-[9px] sm:text-[11px] font-semibold text-[#13A163] tracking-wide uppercase mt-0.5">An Online Store For Your Home Improvement</span></span>
+            </button>
+            <div className="hidden md:flex flex-1 max-w-md relative"><input type="text" placeholder="Search chemicals, paints, hardware, blinds, decor..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="w-full pl-10 pr-10 py-2.5 rounded-full border border-gray-200 bg-gray-50 text-sm" /><Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />{searchQuery && <button aria-label="Clear search" onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><X className="w-4 h-4" /></button>}</div>
+            <div className="flex items-center space-x-2 sm:space-x-3"><a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg bg-emerald-50 text-[#0B3D26] border border-emerald-200 font-bold text-xs"><MessageCircle className="w-4 h-4 text-[#13A163]" /><span>Quick WhatsApp</span></a><button onClick={() => setIsCartOpen(true)} className="relative flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg bg-[#0B3D26] text-white shadow-md"><ShoppingCart className="w-5 h-5 text-emerald-400" /><span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">Cart</span>{totalCartCount > 0 && <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-extrabold bg-[#13A163] text-white rounded-full">{totalCartCount}</span>}</button></div>
+          </div>
+          <div className="mt-2.5 md:hidden relative"><input type="text" placeholder="Search RAKSON, roof coat, blinds, hinges..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="w-full pl-9 pr-8 py-2 text-sm rounded-full border border-gray-200 bg-gray-50" /><Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />{searchQuery && <button aria-label="Clear search" onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400"><X className="w-3.5 h-3.5" /></button>}</div>
+        </div>
+        <div className="bg-[#0B3D26]/5 border-t border-gray-200 overflow-x-auto py-2 px-4"><div className="max-w-7xl mx-auto flex items-center space-x-2 min-w-max">{CATEGORIES.map((category) => <button key={category} onClick={() => selectCategoryAndScroll(category)} className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap flex items-center space-x-1.5 ${selectedCategory === category ? 'bg-[#0B3D26] text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'}`}><span>{category === 'All Categories' ? '✨' : category === 'Building Chemicals' ? '🧪' : category === 'Paints' ? '🎨' : category === 'Hardware' ? '🔧' : category === 'Windows Blinds' ? '🪟' : '🖼️'}</span><span>{category}</span></button>)}</div></div>
       </header>
 
-      <section className="bg-[#0B3D26] text-white py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          {selectedCategory === 'All Categories' ? <>
-            <p className="text-emerald-300 text-sm font-bold">HOME DEPO · HOME IMPROVEMENT</p>
-            <h1 className="text-3xl sm:text-4xl font-extrabold mt-2">Products for your home and renovation</h1>
-            <p className="text-emerald-100 mt-3 max-w-2xl">Browse building chemicals, paints, hardware, blinds, and wall decor. Select a department to view its products.</p>
-          </> : <div className="flex items-center gap-3"><button onClick={goBack} className="inline-flex items-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 px-3 py-2 text-sm font-bold"><ArrowLeft className="w-4 h-4" />Back</button><div><p className="text-emerald-300 text-xs font-bold">DEPARTMENT</p><h1 className="text-2xl sm:text-3xl font-extrabold">{selectedCategory}</h1></div></div>}
-        </div>
+      <section className="relative bg-[#0B3D26] text-white overflow-hidden py-10 sm:py-14">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#13A163_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" /><div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#13A163]/20 blur-3xl pointer-events-none" /><div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#13A163]/15 blur-3xl pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{selectedCategory === 'All Categories' && <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-5"><div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#13A163]/25 border border-[#13A163]/40 text-emerald-300 text-xs font-bold tracking-wide uppercase"><Sparkles className="w-3.5 h-3.5 text-emerald-400" /><span>Your One-Stop Home Depot</span></div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">HOME DEPO - An Online Store For Your Home Improvement</h1><p className="text-sm sm:text-base md:text-lg text-emerald-100/90 leading-relaxed max-w-2xl">An easy way to approach household items through online. From building chemicals and paints to kitchen accessories, doors, curtains, and decor.</p>
+            <div className="pt-2"><div className="text-xs text-emerald-300 font-semibold mb-2">Browse By Department:</div><div className="flex flex-wrap gap-2">{CATEGORIES.filter((category) => category !== 'All Categories').map((category) => <button key={category} onClick={() => selectCategoryAndScroll(category)} className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-medium border border-white/10">{category === 'Windows Blinds' ? 'Curtains & Blinds' : category}</button>)}</div></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2"><div className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs"><ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" /><span>100% Trusted</span></div><div className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs"><Truck className="w-4 h-4 text-emerald-400 shrink-0" /><span>All Pakistan Delivery</span></div><div className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs col-span-2 sm:col-span-1"><PhoneCall className="w-4 h-4 text-emerald-400 shrink-0" /><span>Fast Support</span></div></div>
+          </div>
+          <div className="lg:col-span-5"><div className="bg-white/95 text-gray-900 rounded-2xl p-4 sm:p-5 shadow-2xl border border-white/30"><div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-[16/10] mb-4 group shadow-md"><img src={asset('/assets/home-depo-hero-banner.jpg')} alt="HOME DEPO Luxury Home Improvement Showcase" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" /><div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-4"><div className="text-white"><span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 block">Interior &amp; Exterior Renovation</span><h2 className="font-bold text-sm sm:text-base leading-tight">Chemicals • Paints • Hardware • Blinds • Decor</h2></div></div></div><div className="grid grid-cols-3 gap-2 text-center text-xs">{[['Chemicals', 'Building Chemicals'], ['Paints', 'Paints'], ['Blinds', 'Windows Blinds']].map(([label, category]) => <button key={label} onClick={() => selectCategoryAndScroll(category as CategoryType)} className="p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#0B3D26] font-bold border border-emerald-200">{label}</button>)}</div></div></div>
+        </div>}</div>
       </section>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
-        <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
-          <div><p className="text-xs font-bold uppercase text-emerald-700">{selectedCategory} · {filteredProducts.length} products</p><h2 className="text-2xl font-extrabold text-[#0B3D26]">{selectedCategory === 'All Categories' ? 'Shop products' : selectedCategory}</h2></div>
-          {(selectedCategory !== 'All Categories' || searchQuery) && <button onClick={goBack} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white text-sm font-semibold"><ArrowLeft className="w-4 h-4" />Back</button>}
-        </div>
-        {filteredProducts.length === 0 ? <p className="rounded-xl bg-white border p-8 text-center text-gray-600">No products found. Try another search or category.</p> : <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredProducts.map((product) => {
-            const index = selectedVariants[product.id] ?? 0;
-            const variant = product.variants?.[index];
-            return <article key={product.id} className="rounded-xl border bg-white overflow-hidden shadow-sm flex flex-col">
-              <button onClick={() => openProduct(product)} className="relative aspect-square bg-gray-100"><img src={variant?.image ?? product.image} alt={product.title} className="w-full h-full object-cover" loading="lazy" /><span className="absolute left-2 top-2 rounded bg-[#0B3D26] px-2 py-1 text-[10px] font-bold text-white">{product.badge}</span></button>
-              <div className="p-3 flex flex-col flex-1"><p className="text-[10px] font-bold uppercase text-emerald-700">{product.category}</p><button onClick={() => openProduct(product)} className="text-left font-bold text-sm mt-1">{product.title}</button><p className="text-xs text-gray-600 mt-2 line-clamp-3">{product.description}</p>
-                {product.variants && <div className="flex flex-wrap gap-1 mt-3">{product.variants.map((item, variantIndex) => <button key={item.weight} onClick={() => setVariant(product.id, variantIndex)} className={`rounded border px-2 py-1 text-[10px] ${index === variantIndex ? 'bg-[#0B3D26] text-white' : 'bg-white'}`}>{item.weight}</button>)}</div>}
-                <div className="mt-auto pt-3"><p className="font-extrabold text-[#0B3D26] mb-2">{product.priceType === 'fixed' ? `PKR ${(variant?.price ?? product.basePrice ?? 0).toLocaleString()}` : 'Ask for price'}</p>{product.priceType === 'fixed' ? <button onClick={() => addToCart(product)} className="w-full rounded-lg bg-[#0B3D26] text-white py-2 text-xs font-bold">Add to cart</button> : <button onClick={() => askOnWhatsApp(product)} className="w-full rounded-lg bg-emerald-50 text-[#0B3D26] py-2 text-xs font-bold">Ask on WhatsApp</button>}</div>
-              </div>
-            </article>;
-          })}
-        </div>}
+      <main id="products-section" className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 pb-4 border-b border-gray-200 gap-3"><div><div className="flex items-center space-x-2 text-xs font-bold uppercase text-[#13A163] tracking-wider"><span>{selectedCategory} Products</span><span>•</span><span>{filteredProducts.length} Items Listed</span></div><h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B3D26] mt-1">{selectedCategory === 'All Categories' ? 'All Home Improvement Products' : selectedCategory}</h2></div><div className="text-xs text-gray-500 flex items-center space-x-2"><PackageCheck className="w-4 h-4 text-[#13A163]" /><span>Select sizes or click Ask Price for instant WhatsApp quote</span></div></div>
+        {filteredProducts.length === 0 ? <div className="bg-white rounded-2xl p-12 text-center border border-gray-200"><Search className="w-12 h-12 text-gray-300 mx-auto mb-3" /><h3 className="text-lg font-bold text-gray-800">No products found</h3><p className="text-sm text-gray-500 mt-1">Try clearing your search query or selecting another category.</p><button onClick={() => { setSearchQuery(''); setSelectedCategory('All Categories'); }} className="mt-4 px-4 py-2 bg-[#0B3D26] text-white rounded-lg text-xs font-semibold">Reset Search</button></div> : <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">{filteredProducts.map((product) => {
+          const selectedIndex = selectedVariants[product.id] ?? 0;
+          const variant = product.variants?.[selectedIndex];
+          const image = variant?.image || product.image || '';
+          return <article key={product.id} className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+            <button type="button" onClick={() => setSelectedProduct(product)} className="relative aspect-square w-full overflow-hidden bg-gray-100">{image ? <img src={image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" onError={(event) => { (event.target as HTMLImageElement).style.display = 'none'; }} /> : <span className="w-full h-full bg-[#E8F8F0] flex flex-col items-center justify-center p-4 text-center"><Sparkles className="w-8 h-8 text-[#13A163] mb-2" /><span className="text-sm font-bold text-[#0B3D26]">Photo coming soon</span><span className="text-[10px] text-[#13A163] mt-1">Quality Assured • Ask details</span></span>}{product.badge && <span className="absolute top-2 left-2 bg-[#0B3D26] text-white text-[10px] font-bold px-2 py-0.5 rounded">{product.badge}</span>}<span className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span className="bg-white/90 text-[#0B3D26] text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1"><Eye className="w-3.5 h-3.5" /><span>Quick View</span></span></span></button>
+            <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between"><div><span className="text-[10px] sm:text-[11px] font-bold text-[#13A163] uppercase tracking-wider">{product.category}</span><button onClick={() => setSelectedProduct(product)} className="block text-left text-xs sm:text-sm font-bold text-gray-900 mt-0.5 line-clamp-2 hover:text-[#0B3D26]">{product.title}</button><p className="text-[11px] text-gray-500 mt-1 line-clamp-2 leading-relaxed">{product.description}</p>
+              {product.variants && <div className="mt-2.5"><div className="text-[10px] text-gray-500 font-semibold mb-1">Available Sizes:</div><div className={`grid ${product.variants.length > 3 ? 'grid-cols-2' : 'grid-cols-3'} gap-1`}>{product.variants.map((item, index) => <button key={item.weight} onClick={() => handleVariantChange(product.id, index)} className={`px-1.5 py-1 text-[10px] font-bold rounded border ${index === selectedIndex ? 'bg-[#0B3D26] text-white border-[#0B3D26]' : 'bg-white text-gray-700 border-gray-200'}`}>{item.weight}</button>)}</div></div>}</div>
+              <div className="mt-3 pt-2.5 border-t border-gray-100"><div className="mb-2">{product.priceType === 'fixed' ? <><span className="text-[10px] text-gray-400 block uppercase">Price in PKR</span><span className="text-sm sm:text-base font-extrabold text-[#0B3D26]">PKR {(variant?.price ?? product.basePrice ?? 0).toLocaleString()}</span></> : <><span className="text-[10px] text-gray-400 block uppercase">Pricing</span><span className="text-xs sm:text-sm font-bold text-[#13A163]">Ask Price</span></>}</div>{product.priceType === 'fixed' ? <div className="flex gap-1.5"><button onClick={() => addToCart(product, selectedIndex)} className="flex-1 py-2 px-2 rounded-lg bg-[#0B3D26] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center space-x-1.5"><ShoppingCart className="w-3.5 h-3.5" /><span>Add</span></button><button aria-label={`Order ${product.title} on WhatsApp`} onClick={() => directOrder(product, variant)} className="p-2 rounded-lg bg-emerald-50 text-[#0B3D26] border border-emerald-200"><MessageCircle className="w-3.5 h-3.5 text-[#13A163]" /></button></div> : <button onClick={() => askPrice(product)} className="w-full py-2 px-2 rounded-lg bg-emerald-50 text-[#0B3D26] text-[11px] sm:text-xs font-bold flex items-center justify-center space-x-1.5"><MessageCircle className="w-3.5 h-3.5 text-[#13A163]" /><span>Ask on WhatsApp</span></button>}</div>
+            </div>
+          </article>;
+        })}</div>}
       </main>
 
-      <footer className="bg-[#0B3D26] text-emerald-100 py-6 text-center text-sm">HOME DEPO · Customer care and orders: +92 342 1234789</footer>
+      <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="fixed bottom-5 right-5 z-40 flex items-center space-x-2 bg-[#25D366] hover:bg-[#20ba59] text-white px-4 py-3 rounded-full shadow-2xl"><MessageCircle className="w-6 h-6 fill-white" /><span className="font-bold text-xs sm:text-sm tracking-wide hidden sm:inline">Order on WhatsApp</span></a>
+      <footer className="bg-[#0B3D26] text-white border-t border-emerald-950 mt-auto"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10"><div className="grid grid-cols-1 md:grid-cols-4 gap-8"><div className="md:col-span-2 space-y-3"><div className="flex items-center space-x-3"><img src={asset('/assets/logo-home-depo.jpg')} alt="HOME DEPO Logo" className="h-12 sm:h-14 w-auto object-contain rounded-xl border border-white/20 bg-[#161a1d] p-1" /><div className="flex flex-col"><span className="text-xl sm:text-2xl font-black">HOME DEPO</span><span className="text-[10px] sm:text-xs text-emerald-300 font-semibold uppercase mt-1">An Online Store For Your Home Improvement</span></div></div><p className="text-xs text-emerald-300/80 max-w-md">An easy way to approach household items through online. From building chemicals and paints to kitchens, blinds, decor, and serving care.</p><div className="pt-2 text-xs text-emerald-200 flex items-center space-x-2"><PhoneCall className="w-3.5 h-3.5 text-[#13A163]" /><span>Customer Care &amp; Orders: +92 342 1234789</span></div></div><div><h3 className="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-3">Departments</h3><ul className="space-y-1.5 text-xs text-emerald-100/80">{CATEGORIES.filter((category) => category !== 'All Categories').map((category) => <li key={category}><button onClick={() => selectCategoryAndScroll(category)} className="hover:text-white">{category}</button></li>)}</ul></div><div><h3 className="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-3">Order &amp; Support</h3><p className="text-xs text-emerald-200/80 mb-3">Need help? Talk directly with our team.</p><a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="inline-flex items-center space-x-1.5 bg-[#13A163] text-white text-xs font-bold px-3 py-2 rounded-full"><MessageCircle className="w-3.5 h-3.5" /><span>WhatsApp +92 342 1234789</span></a></div></div><div className="mt-8 pt-6 border-t border-emerald-900/60 flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-300/60 gap-2"><p>© {new Date().getFullYear()} HOME DEPO. All rights reserved.</p><p>Delivery across Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Multan &amp; Nationwide.</p></div></div></footer>
 
-      {selectedProduct && <div className="fixed inset-0 z-50 bg-black/60 overflow-y-auto p-3 sm:p-6 flex items-center justify-center" onKeyDown={(event) => { if (event.key === 'Escape') closeProduct(); }}>
-        <button aria-label="Close product details" className="absolute inset-0 w-full h-full cursor-default" onClick={closeProduct} />
-        <section role="dialog" aria-modal="true" aria-labelledby="product-title" className="relative z-10 bg-white rounded-2xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-4 sm:p-6">
-          <div className="flex justify-between gap-3 items-start"><button onClick={closeProduct} className="inline-flex items-center gap-2 text-sm font-bold text-[#0B3D26]"><ArrowLeft className="w-4 h-4" />Back to products</button><button onClick={closeProduct} aria-label="Close" className="p-2 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></button></div>
-          <div className="grid sm:grid-cols-2 gap-5 mt-4"><img src={selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0]?.image ?? selectedProduct.image} alt={selectedProduct.title} className="w-full aspect-square object-cover rounded-xl bg-gray-100" />
-            <div><p className="text-xs uppercase font-bold text-emerald-700">{selectedProduct.category}</p><h2 id="product-title" className="text-xl font-extrabold text-[#0B3D26] mt-1">{selectedProduct.title}</h2><p className="text-sm text-gray-700 mt-3 leading-relaxed">{selectedProduct.description}</p>
-              <div className="mt-4"><h3 className="text-xs uppercase font-bold text-gray-500 mb-2">Key details</h3>{selectedProduct.features.map((feature) => <p key={feature} className="flex gap-2 text-sm py-1"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />{feature}</p>)}</div>
-              {selectedProduct.specs && <dl className="mt-4 border-t pt-3 space-y-2">{selectedProduct.specs.map((spec) => <div key={spec.label} className="flex gap-3 justify-between text-xs"><dt className="font-bold text-gray-600">{spec.label}</dt><dd className="text-right">{spec.value}</dd></div>)}</dl>}
-              {selectedProduct.variants && <div className="mt-4 space-y-2">{selectedProduct.variants.map((variant, index) => <button key={variant.weight} onClick={() => setVariant(selectedProduct.id, index)} className={`w-full rounded-lg border p-2 flex justify-between text-sm ${index === (selectedVariants[selectedProduct.id] ?? 0) ? 'border-emerald-700 bg-emerald-50' : ''}`}><span>{variant.name}</span><b>PKR {variant.price.toLocaleString()}</b></button>)}</div>}
-              <div className="mt-5 flex gap-2">{selectedProduct.priceType === 'fixed' && <button onClick={() => { addToCart(selectedProduct); closeProduct(); }} className="flex-1 rounded-lg bg-[#0B3D26] text-white py-2.5 text-sm font-bold">Add to cart</button>}<button onClick={() => askOnWhatsApp(selectedProduct, selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0])} className="flex-1 rounded-lg bg-[#25D366] text-white py-2.5 text-sm font-bold inline-flex justify-center items-center gap-2"><MessageCircle className="w-4 h-4" />WhatsApp</button></div>
-            </div>
-          </div>
-        </section>
-      </div>}
+      {isCartOpen && <div className="fixed inset-0 z-50 overflow-hidden"><button aria-label="Close cart" className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} /><div className="fixed inset-y-0 right-0 max-w-full flex"><aside className="w-screen max-w-md bg-white shadow-2xl flex flex-col"><div className="p-4 bg-[#0B3D26] text-white flex items-center justify-between"><div className="flex items-center space-x-2.5"><img src={asset('/assets/logo-home-depo.jpg')} alt="HOME DEPO logo" className="h-7 w-auto object-contain" /><h2 className="font-bold text-base">Your Cart ({totalCartCount})</h2></div><button onClick={() => setIsCartOpen(false)} aria-label="Close cart"><X className="w-5 h-5" /></button></div><div className="flex-1 overflow-y-auto p-4 space-y-3">{cart.length === 0 ? <div className="h-full flex flex-col items-center justify-center text-center p-6 text-gray-500"><ShoppingCart className="w-12 h-12 text-gray-300 mb-3" /><p className="font-bold text-gray-700">Your cart is empty</p><p className="text-xs text-gray-400 mt-1">Explore our departments and add items to your cart.</p><button onClick={() => setIsCartOpen(false)} className="mt-4 px-4 py-2 bg-[#0B3D26] text-white text-xs font-bold rounded-lg">Browse Products</button></div> : cart.map((item) => <div key={item.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-200"><div className="w-16 h-16 rounded-lg bg-white overflow-hidden shrink-0 border border-gray-200 flex items-center justify-center">{item.image ? <img src={item.image} alt={item.title} className="w-full h-full object-cover" /> : <span className="text-[9px] text-[#13A163]">No Photo</span>}</div><div className="flex-1 min-w-0"><h3 className="text-xs font-bold truncate">{item.title}</h3>{item.variantName && <p className="text-[11px] text-[#13A163] font-semibold">{item.variantName}</p>}<p className="text-xs font-extrabold text-[#0B3D26]">PKR {item.price.toLocaleString()}</p><div className="flex items-center space-x-2 mt-2"><div className="flex items-center border rounded bg-white"><button aria-label="Decrease quantity" onClick={() => updateQuantity(item.id, -1)} className="px-2 py-0.5"><Minus className="w-3 h-3" /></button><span className="px-2 text-xs font-bold">{item.quantity}</span><button aria-label="Increase quantity" onClick={() => updateQuantity(item.id, 1)} className="px-2 py-0.5"><Plus className="w-3 h-3" /></button></div><button onClick={() => removeFromCart(item.id)} aria-label="Remove item" className="text-gray-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button></div></div><div className="text-right text-xs font-bold">PKR {(item.price * item.quantity).toLocaleString()}</div></div>)}
+          {cart.length > 0 && <div className="mt-4 pt-4 border-t border-gray-200"><h3 className="text-xs font-bold text-gray-800 mb-2">Delivery Details (for WhatsApp Order):</h3><div className="space-y-2 text-xs"><input type="text" placeholder="Your Full Name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} className="w-full px-3 py-2 border rounded-lg" /><div className="grid grid-cols-2 gap-2"><input type="tel" placeholder="Phone / WhatsApp" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} className="w-full px-3 py-2 border rounded-lg" /><input type="text" placeholder="City (e.g. Lahore)" value={customerCity} onChange={(event) => setCustomerCity(event.target.value)} className="w-full px-3 py-2 border rounded-lg" /></div><input type="text" placeholder="Delivery Street Address" value={customerAddress} onChange={(event) => setCustomerAddress(event.target.value)} className="w-full px-3 py-2 border rounded-lg" /></div></div>}
+        </div>{cart.length > 0 && <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3"><p className="font-extrabold text-[#0B3D26]">Subtotal: PKR {cartTotal.toLocaleString()}</p><div className="flex items-center justify-between text-xs text-gray-500"><span>Shipping Charges</span><span className="text-[#13A163] font-semibold">Calculated on WhatsApp</span></div><button onClick={handleWhatsAppCheckout} className="w-full py-3 px-4 rounded-xl bg-[#25D366] text-white font-extrabold text-sm flex items-center justify-center space-x-2"><MessageCircle className="w-5 h-5 fill-white" /><span>Send Order via WhatsApp</span></button><p className="text-[10px] text-center text-gray-500">Payment options and account details are shown above the order button.</p></div>}</aside></div></div>}
 
-      {isCartOpen && <div className="fixed inset-0 z-50 bg-black/50 flex justify-end" onClick={() => setIsCartOpen(false)}><aside className="bg-white w-full max-w-md h-full p-4 flex flex-col" onClick={(event) => event.stopPropagation()}><div className="flex justify-between items-center border-b pb-3"><h2 className="font-bold text-lg">Your Cart ({itemCount})</h2><button onClick={() => setIsCartOpen(false)} aria-label="Close cart"><X /></button></div><div className="flex-1 overflow-y-auto py-3 space-y-3">{cart.length === 0 ? <p className="text-center text-gray-500 mt-10">Your cart is empty.</p> : cart.map((item) => <div key={item.id} className="flex gap-3 items-center border rounded-lg p-2"><img src={item.image} alt="" className="w-14 h-14 object-cover rounded" /><div className="flex-1"><p className="font-semibold text-sm">{item.title}</p><p className="text-xs text-gray-500">{item.variantName} · PKR {item.price.toLocaleString()}</p><div className="flex items-center gap-2 mt-1"><button aria-label="Decrease quantity" onClick={() => changeQuantity(item.id, -1)}><Minus className="w-4 h-4" /></button><span>{item.quantity}</span><button aria-label="Increase quantity" onClick={() => changeQuantity(item.id, 1)}><Plus className="w-4 h-4" /></button><button aria-label="Remove item" onClick={() => setCart((items) => items.filter((entry) => entry.id !== item.id))}><Trash2 className="w-4 h-4 text-red-600" /></button></div></div></div>)}</div><div className="border-t pt-3"><p className="font-bold mb-3">Subtotal: PKR {total.toLocaleString()}</p><button disabled={!cart.length} onClick={() => { const order = cart.map((item) => `${item.title}${item.variantName ? ` (${item.variantName})` : ''} x${item.quantity} - PKR ${(item.price * item.quantity).toLocaleString()}`).join('\n'); window.open(`${WHATSAPP}?text=${encodeURIComponent(`HOME DEPO order inquiry:\n${order}\nSubtotal: PKR ${total.toLocaleString()}\nPlease confirm delivery charges.`)}`, '_blank', 'noopener,noreferrer'); }} className="w-full rounded-lg bg-[#25D366] text-white py-3 font-bold disabled:opacity-50">Order via WhatsApp</button></div></aside></div>}
+      {selectedProduct && <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4"><button aria-label="Close product details" className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedProduct(null)} /><section role="dialog" aria-modal="true" className="relative bg-white rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl z-10 max-h-[90vh] overflow-y-auto"><button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 p-1.5 rounded-full text-gray-400 hover:text-gray-700" aria-label="Close"><X className="w-4 h-4" /></button><div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><div><div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200">{(selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0]?.image || selectedProduct.image) ? <img src={selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0]?.image || selectedProduct.image} alt={selectedProduct.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-[#E8F8F0] flex flex-col items-center justify-center"><Sparkles className="w-8 h-8 text-[#13A163] mb-2" /><span className="font-bold text-sm text-[#0B3D26]">Photo coming soon</span></div>}</div>{selectedProduct.variants && <div className="mt-3 flex gap-2 overflow-x-auto">{selectedProduct.variants.map((variant, index) => <button key={variant.weight} onClick={() => handleVariantChange(selectedProduct.id, index)} className={`w-14 h-14 rounded-lg overflow-hidden border-2 shrink-0 ${index === (selectedVariants[selectedProduct.id] ?? 0) ? 'border-[#13A163]' : 'border-gray-200'}`}><img src={variant.image} alt={variant.name} className="w-full h-full object-cover" /></button>)}</div>}</div><div className="flex flex-col justify-between"><div><span className="text-xs font-bold text-[#13A163] uppercase tracking-wider">{selectedProduct.category}</span><h2 className="text-xl font-extrabold text-[#0B3D26] mt-1">{selectedProduct.title}</h2><div className="mt-2">{selectedProduct.priceType === 'fixed' ? <div className="text-2xl font-black text-[#0B3D26]">PKR {(selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0]?.price ?? selectedProduct.basePrice ?? 0).toLocaleString()}</div> : <div className="text-lg font-bold text-[#13A163]">Ask Price / Request Quote</div>}</div><p className="text-xs text-gray-600 mt-3 leading-relaxed">{selectedProduct.description}</p><div className="mt-4 space-y-1.5"><span className="text-[11px] font-bold uppercase text-gray-500">Key Highlights:</span>{selectedProduct.features.map((feature) => <div key={feature} className="flex items-center space-x-1.5 text-xs text-gray-700"><CheckCircle2 className="w-3.5 h-3.5 text-[#13A163] shrink-0" /><span>{feature}</span></div>)}</div>{selectedProduct.specs && <dl className="mt-4 space-y-2">{selectedProduct.specs.map((spec) => <div key={spec.label} className="flex justify-between gap-3 text-xs"><dt className="font-bold">{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl>}{selectedProduct.variants && <div className="mt-4"><label className="text-xs font-bold text-gray-700 block mb-1.5">Available Sizes / Packing:</label><div className="grid grid-cols-2 gap-1.5">{selectedProduct.variants.map((variant, index) => <button key={variant.weight} onClick={() => handleVariantChange(selectedProduct.id, index)} className={`p-2 rounded-lg text-xs font-bold border text-left ${index === (selectedVariants[selectedProduct.id] ?? 0) ? 'bg-[#0B3D26] text-white border-[#0B3D26]' : 'bg-white text-gray-700 border-gray-200'}`}><div>{variant.name}</div><div className="text-[10px]">PKR {variant.price.toLocaleString()}</div></button>)}</div></div>}</div><div className="mt-6 pt-4 border-t border-gray-100 flex gap-2">{selectedProduct.priceType === 'fixed' ? <><button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} className="flex-1 py-2.5 rounded-xl bg-[#0B3D26] text-white text-xs font-bold flex items-center justify-center space-x-1.5"><ShoppingCart className="w-4 h-4" /><span>Add to Cart</span></button><button onClick={() => directOrder(selectedProduct, selectedProduct.variants?.[selectedVariants[selectedProduct.id] ?? 0])} className="flex-1 py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-bold flex items-center justify-center space-x-1.5"><MessageCircle className="w-4 h-4" /><span>Order on WhatsApp</span></button></> : <button onClick={() => askPrice(selectedProduct)} className="w-full py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-bold flex items-center justify-center space-x-1.5"><MessageCircle className="w-4 h-4" /><span>Ask Price on WhatsApp</span></button>}</div></div></div></section></div>}
+      {toastMessage && <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0B3D26] text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-2"><Check className="w-4 h-4 text-emerald-400" /><span>{toastMessage}</span></div>}
     </div>
   );
 }
