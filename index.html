@@ -35,11 +35,9 @@
       .hd-payment .hd-note { color: #59645d; }
       .hd-payment details > summary { color: #0b3d26; font-weight: 700; cursor: pointer; padding: 5px 0; }
       .hd-payment .hd-whatsapp { display: inline-block; margin: 7px 0 0; padding: 8px 11px; border-radius: 8px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
-      /* Cart drawer stays within the phone viewport and its contents can scroll. */
       [aria-label="Close cart"] + div > aside { max-height: 100dvh; padding-bottom: env(safe-area-inset-bottom); }
       [aria-label="Close cart"] + div > aside > div:nth-child(2) { min-height: 0; overscroll-behavior: contain; }
       [aria-label="Close cart"] + div input { min-height: 44px; font: inherit; }
-      /* Friendly, instant store guide. Answers are local, so no API key or customer data is sent. */
       .hd-assistant-launch { position: fixed; z-index: 45; right: 18px; bottom: calc(88px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 9px; border: 0; border-radius: 999px; padding: 11px 16px; background: #0b3d26; color: white; font: 700 13px 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 26px #0b3d2640; cursor: pointer; }
       .hd-assistant-launch:hover { background: #145536; transform: translateY(-2px); }
       .hd-assistant-launch-icon { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: #13a163; font-size: 17px; }
@@ -70,17 +68,18 @@
     <div id="root"></div>
     <script>
       (() => {
-        // Friendly checkout wording for older WhatsApp message templates.
+        // Remove delivery-charge wording from WhatsApp order templates without adding a replacement sentence.
         const nativeOpen = window.open.bind(window);
         window.open = (url, target, features) => {
           try {
             const link = new URL(url, window.location.href);
             if (link.hostname === 'wa.me' && link.searchParams.has('text')) {
               let message = link.searchParams.get('text');
-              message = message.replace(/\s\+\sDelivery\b/gi, ' (delivery charges included)');
-              message = message.replace(/Please confirm availability and delivery charges\.?\s*/gi, 'Website par listed price delivery charges ke sath hai—bilkul fikr na karein.');
-              message = message.replace(/Could you please share the current price, specifications, and delivery details\?/gi, 'Please share the product specifications. Website par listed prices delivery charges ke sath hain—bilkul fikr na karein.');
-              message = message.replace(/Please share delivery time and payment process\./gi, 'Website par listed price delivery charges ke sath hai—bilkul fikr na karein. Please share the delivery time and payment process.');
+              message = message.replace(/\s*\+\s*Delivery\b/gi, '');
+              message = message.replace(/Please confirm availability and delivery charges(?: to my address)?\.?/gi, 'Thank you!');
+              message = message.replace(/delivery charges included/gi, '');
+              message = message.replace(/Website par listed prices? delivery charges ke sath hain?[—-]?\s*bilkul fikr na karein\.?/gi, '');
+              message = message.replace(/\s{2,}/g, ' ').replace(/\n\s*\n\s*\n+/g, '\n\n').trim();
               link.searchParams.set('text', message);
               url = link.toString();
             }
@@ -98,7 +97,7 @@
           panel.setAttribute('aria-label', 'Payment instructions');
           panel.innerHTML = `
             <h3>Payment options</h3>
-            <p class="hd-note">Website par listed prices delivery charges ke sath hain. Payment bhejne ke baad screenshot WhatsApp par share karein.</p>
+            <p class="hd-note">Payment bhejne ke baad screenshot WhatsApp par share karein.</p>
             <details>
               <summary>View payment account details</summary>
               <div class="hd-payment-method">
@@ -152,16 +151,16 @@
           };
           const answer = (question) => {
             const q = question.toLowerCase();
-            if (/hello|hi\b|salam|assalam|hey|who are you/.test(q)) return 'Assalam-o-alaikum! Welcome to HOME DEPO 😊 I can help you explore products, prices, ordering, and delivery. What are you looking for today?';
+            if (/hello|hi\b|salam|assalam|hey|who are you/.test(q)) return 'Assalam-o-alaikum! Welcome to HOME DEPO 😊 I can help you explore products, ordering, and payment. What are you looking for today?';
             if (/what.*(find|sell|store|website)|about|overview|category|categories|browse/.test(q)) return 'HOME DEPO is your friendly home-improvement store. Browse building chemicals, paints, hardware, curtains & blinds, and wall decor. Choose a category or search products, then open a product to see available details and sizes.';
             if (/order|cart|buy|checkout|purchase/.test(q)) return 'To order, choose a listed product and size, tap Add to Cart, then open your cart. Enter your name, phone, city, and delivery address, and tap Send Order via WhatsApp. Our team will help confirm the order.';
-            if (/delivery|shipping|charge|price|cost|rate/.test(q)) return 'Prices shown on the website include delivery charges—bilkul fikr na karein 😊 Add your delivery details in the cart and send your order on WhatsApp. For products marked Ask Price, message us for a quote.';
+            if (/delivery|shipping|charge|price|cost|rate/.test(q)) return 'You can browse the listed prices on product cards. Add your chosen items to the cart and send your order on WhatsApp; for products marked Ask Price, message us for a quote.';
             if (/payment|jazzcash|bank|iban|account/.test(q)) return 'Open your cart and look under Payment options. Tap “View payment account details” to see JazzCash and bank transfer information. Please share your payment screenshot with our team on WhatsApp.';
             if (/paint|chemical|sealant|rakson|hardware|blind|curtain|decor|wall|product|size|specification/.test(q)) {
               const found = Array.from(document.querySelectorAll('article')).find((card) => card.textContent.toLowerCase().includes(q.split(/\s+/).find((word) => word.length > 3) || q));
               return found ? `I found a product that may help: ${found.querySelector('h3')?.textContent || 'see the product card'}. Open its card for sizes, listed prices, and details. You can also ask our team on WhatsApp.` : 'We have building chemicals, paints, hardware, curtains & blinds, and wall decor. Try the search bar or category buttons to find an item. For product-specific advice, message our team on WhatsApp.';
             }
-            return 'I can help with products, categories, ordering, payment, and delivery. Try asking “What can I find here?” or “How do I order?” For anything specific, our team is one tap away on WhatsApp.';
+            return 'I can help with products, categories, ordering, and payment. Try asking “What can I find here?” or “How do I order?” For anything specific, our team is one tap away on WhatsApp.';
           };
           const send = (text) => {
             const value = text.trim();
@@ -176,8 +175,15 @@
           chat.querySelectorAll('.hd-assistant-suggestions button').forEach((button) => button.addEventListener('click', () => send(button.textContent)));
         };
 
+        const removeShippingRow = () => {
+          const cart = document.querySelector('[aria-label="Close cart"] + div > aside');
+          if (!cart) return;
+          cart.querySelectorAll('div').forEach((row) => {
+            if (row.children.length === 2 && /shipping charges/i.test(row.textContent) && /calculated on whatsapp/i.test(row.textContent)) row.remove();
+          });
+        };
         const root = document.getElementById('root');
-        new MutationObserver(() => { addPaymentInstructions(); addStoreAssistant(); }).observe(root, { childList: true, subtree: true });
+        new MutationObserver(() => { addPaymentInstructions(); addStoreAssistant(); removeShippingRow(); }).observe(root, { childList: true, subtree: true });
         addStoreAssistant();
         document.addEventListener('click', async (event) => {
           const button = event.target.closest('[data-copy]');
