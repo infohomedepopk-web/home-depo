@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>HOME DEPO | Home Improvement Store</title>
     <meta name="description" content="HOME DEPO - An Online Store For Your Home Improvement. RAKSON chemicals, paints, hardware, blinds and decor delivered to your doorstep." />
     <meta property="og:title" content="HOME DEPO - An Online Store For Your Home Improvement" />
@@ -25,23 +25,52 @@
       @media (prefers-reduced-motion: no-preference) {
         button, a, article { transition-property: color, background-color, border-color, box-shadow, transform; transition-duration: 180ms; }
       }
-      .hd-payment { margin-top: 14px; padding: 16px; border: 1px solid #d1e5d8; border-radius: 16px; background: linear-gradient(145deg, #f8fcf9, #eef7f1); color: #111827; font: 13px/1.6 'Plus Jakarta Sans', system-ui, sans-serif; box-shadow: 0 8px 24px rgba(11, 61, 38, .06); }
-      .hd-payment h3 { margin: 0 0 8px; color: #0b3d26; font-size: 16px; font-weight: 800; }
-      .hd-payment p { margin: 5px 0; }
-      .hd-payment-method { margin-top: 10px; padding: 12px; border-radius: 12px; background: #fff; border: 1px solid #e3ebe5; }
+      /* Keep checkout details easy to scan; payment methods stay tucked away until needed. */
+      .hd-payment { margin-top: 10px; padding: 11px 12px; border: 1px solid #e1ebe4; border-radius: 12px; background: #f7faf8; color: #374151; font: 12px/1.5 'Plus Jakarta Sans', system-ui, sans-serif; }
+      .hd-payment h3 { margin: 0 0 2px; color: #0b3d26; font-size: 13px; font-weight: 700; }
+      .hd-payment p { margin: 4px 0; }
+      .hd-payment-method { margin-top: 8px; padding: 10px; border-radius: 9px; background: #fff; border: 1px solid #e5ebe7; }
       .hd-payment-title { font-weight: 700; color: #0b3d26; }
-      .hd-payment button { border: 0; border-radius: 7px; padding: 5px 9px; margin-left: 5px; background: #e8f5ee; color: #0b3d26; font-weight: 700; cursor: pointer; }
-      .hd-payment button:hover { background: #d3ecdd; }
-      .hd-payment .hd-note { margin-top: 12px; color: #4b5563; }
-      .hd-payment .hd-whatsapp { display: inline-block; margin: 8px 0 0; padding: 10px 14px; border-radius: 9px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
-      .hd-payment .hd-whatsapp:hover { background: #1fb95a; }
+      .hd-payment button { border: 0; border-radius: 6px; padding: 4px 8px; margin-left: 5px; background: #e8f5ee; color: #0b3d26; font-weight: 700; cursor: pointer; }
+      .hd-payment .hd-note { color: #59645d; }
+      .hd-payment details > summary { color: #0b3d26; font-weight: 700; cursor: pointer; padding: 5px 0; }
+      .hd-payment .hd-whatsapp { display: inline-block; margin: 7px 0 0; padding: 8px 11px; border-radius: 8px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
+      /* Cart drawer stays within the phone viewport and its contents can scroll. */
+      [aria-label="Close cart"] + div > aside { max-height: 100dvh; padding-bottom: env(safe-area-inset-bottom); }
+      [aria-label="Close cart"] + div > aside > div:nth-child(2) { min-height: 0; overscroll-behavior: contain; }
+      [aria-label="Close cart"] + div input { min-height: 44px; font: inherit; }
+      /* Friendly, instant store guide. Answers are local, so no API key or customer data is sent. */
+      .hd-assistant-launch { position: fixed; z-index: 45; right: 18px; bottom: calc(88px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 9px; border: 0; border-radius: 999px; padding: 11px 16px; background: #0b3d26; color: white; font: 700 13px 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 26px #0b3d2640; cursor: pointer; }
+      .hd-assistant-launch:hover { background: #145536; transform: translateY(-2px); }
+      .hd-assistant-launch-icon { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: #13a163; font-size: 17px; }
+      .hd-assistant { position: fixed; z-index: 60; right: 16px; bottom: calc(150px + env(safe-area-inset-bottom)); display: none; flex-direction: column; width: min(370px, calc(100vw - 24px)); height: min(520px, calc(100dvh - 180px)); overflow: hidden; border: 1px solid #dce8df; border-radius: 20px; background: white; box-shadow: 0 20px 70px #0b3d2630; font-family: 'Plus Jakarta Sans', sans-serif; }
+      .hd-assistant.is-open { display: flex; }
+      .hd-assistant-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #0b3d26; color: white; }
+      .hd-assistant-head strong { display: block; font-size: 14px; }
+      .hd-assistant-head span { display: block; margin-top: 2px; color: #c9ead7; font-size: 11px; }
+      .hd-assistant-close { border: 0; border-radius: 8px; padding: 6px 9px; background: #ffffff20; color: white; font-size: 19px; cursor: pointer; }
+      .hd-assistant-messages { display: flex; flex: 1; flex-direction: column; gap: 10px; overflow-y: auto; padding: 14px; background: #f7faf8; }
+      .hd-chat-bubble { max-width: 90%; padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.55; white-space: pre-line; }
+      .hd-chat-bubble.bot { align-self: flex-start; border: 1px solid #e5ece7; border-bottom-left-radius: 4px; background: white; color: #26342b; }
+      .hd-chat-bubble.user { align-self: flex-end; border-bottom-right-radius: 4px; background: #0b3d26; color: white; }
+      .hd-assistant-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 10px; background: #f7faf8; }
+      .hd-assistant-suggestions button { border: 1px solid #cfe2d5; border-radius: 999px; padding: 6px 9px; background: white; color: #0b3d26; font-size: 10px; cursor: pointer; }
+      .hd-assistant-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #e7ece8; background: white; }
+      .hd-assistant-form input { min-width: 0; flex: 1; border: 1px solid #d8e2db; border-radius: 10px; padding: 10px 11px; font: 12px 'Plus Jakarta Sans', sans-serif; }
+      .hd-assistant-form button { border: 0; border-radius: 10px; padding: 0 14px; background: #13a163; color: white; font-weight: 700; cursor: pointer; }
+      @media (max-width: 640px) {
+        .hd-assistant-launch { right: 12px; bottom: calc(78px + env(safe-area-inset-bottom)); padding: 8px 11px; font-size: 12px; }
+        .hd-assistant-launch-icon { width: 28px; height: 28px; }
+        .hd-assistant { right: 10px; bottom: calc(132px + env(safe-area-inset-bottom)); width: calc(100vw - 20px); height: min(68dvh, 500px); }
+        .hd-payment { margin-top: 8px; }
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-900 antialiased selection:bg-[#13A163]/20 selection:text-[#007fff]">
     <div id="root"></div>
     <script>
       (() => {
-        // Keep order messages consistent with the prices shown on the website.
+        // Friendly checkout wording for older WhatsApp message templates.
         const nativeOpen = window.open.bind(window);
         window.open = (url, target, features) => {
           try {
@@ -69,28 +98,87 @@
           panel.setAttribute('aria-label', 'Payment instructions');
           panel.innerHTML = `
             <h3>Payment options</h3>
-            <div class="hd-payment-method">
-              <div class="hd-payment-title"><span aria-hidden="true">💸</span> JazzCash</div>
-              <p>Send payment to: <strong>03005573725</strong>
-                <button type="button" data-copy="03005573725" aria-label="Copy JazzCash number">Copy</button>
-              </p>
-              <p>Account title: <strong>Khalid Mehmood</strong></p>
-            </div>
-            <div class="hd-payment-method">
-              <div class="hd-payment-title"><span aria-hidden="true">🏦</span> Allied Bank transfer</div>
-              <p>Account title: <strong>HOME DEPO</strong></p>
-              <p>IBAN: <strong>PK35ABPA0010024199700016</strong>
-                <button type="button" data-copy="PK35ABPA0010024199700016" aria-label="Copy Allied Bank IBAN">Copy</button>
-              </p>
-              <p>Receiver: Khalid Mehmood</p>
-              <p>Shop No 8, Sadiq Plaza, PWD Housing Society, Islamabad.</p>
-            </div>
-            <p class="hd-note">Payment bhejne ke baad screenshot WhatsApp par share karein. Hamari team payment verify karke aapka order confirm aur dispatch karegi. Website par listed prices delivery charges ke sath hain—bilkul fikr na karein.</p>
+            <p class="hd-note">Website par listed prices delivery charges ke sath hain. Payment bhejne ke baad screenshot WhatsApp par share karein.</p>
+            <details>
+              <summary>View payment account details</summary>
+              <div class="hd-payment-method">
+                <div class="hd-payment-title"><span aria-hidden="true">💸</span> JazzCash</div>
+                <p>Send payment to: <strong>03005573725</strong>
+                  <button type="button" data-copy="03005573725" aria-label="Copy JazzCash number">Copy</button>
+                </p>
+                <p>Account title: <strong>Khalid Mehmood</strong></p>
+              </div>
+              <div class="hd-payment-method">
+                <div class="hd-payment-title"><span aria-hidden="true">🏦</span> Allied Bank transfer</div>
+                <p>Account title: <strong>HOME DEPO</strong></p>
+                <p>IBAN: <strong>PK35ABPA0010024199700016</strong>
+                  <button type="button" data-copy="PK35ABPA0010024199700016" aria-label="Copy Allied Bank IBAN">Copy</button>
+                </p>
+                <p>Receiver: Khalid Mehmood</p>
+                <p>Shop No 8, Sadiq Plaza, PWD Housing Society, Islamabad.</p>
+              </div>
+            </details>
             <a class="hd-whatsapp" href="https://wa.me/923421234789?text=Hello%20HOME%20DEPO%2C%20I%20have%20sent%20the%20payment.%20I%20will%20share%20the%20payment%20screenshot%20here.%20Please%20confirm%20my%20order." target="_blank" rel="noopener noreferrer">Send payment screenshot on WhatsApp</a>
           `;
           subtotal.insertAdjacentElement('afterend', panel);
         };
-        new MutationObserver(addPaymentInstructions).observe(document.getElementById('root'), { childList: true, subtree: true });
+
+        const addStoreAssistant = () => {
+          if (document.querySelector('.hd-assistant-launch')) return;
+          const launcher = document.createElement('button');
+          launcher.type = 'button';
+          launcher.className = 'hd-assistant-launch';
+          launcher.setAttribute('aria-label', 'Open HOME DEPO store guide');
+          launcher.innerHTML = '<span class="hd-assistant-launch-icon" aria-hidden="true">✦</span><span>Ask our store guide</span>';
+          const chat = document.createElement('section');
+          chat.className = 'hd-assistant';
+          chat.setAttribute('aria-label', 'HOME DEPO instant store guide');
+          chat.setAttribute('aria-live', 'polite');
+          chat.innerHTML = `
+            <div class="hd-assistant-head"><div><strong>HOME DEPO Store Guide</strong><span>Friendly help · replies instantly</span></div><button class="hd-assistant-close" type="button" aria-label="Close store guide">×</button></div>
+            <div class="hd-assistant-messages" role="log" aria-label="Conversation"></div>
+            <div class="hd-assistant-suggestions"><button type="button">What can I find here?</button><button type="button">How do I order?</button><button type="button">Delivery &amp; prices</button></div>
+            <form class="hd-assistant-form"><input aria-label="Ask a question" placeholder="Ask about products or ordering…" autocomplete="off" /><button type="submit">Send</button></form>
+          `;
+          document.body.append(launcher, chat);
+          const messages = chat.querySelector('.hd-assistant-messages');
+          const input = chat.querySelector('input');
+          const addBubble = (text, sender) => {
+            const bubble = document.createElement('div');
+            bubble.className = `hd-chat-bubble ${sender}`;
+            bubble.textContent = text;
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+          };
+          const answer = (question) => {
+            const q = question.toLowerCase();
+            if (/hello|hi\b|salam|assalam|hey|who are you/.test(q)) return 'Assalam-o-alaikum! Welcome to HOME DEPO 😊 I can help you explore products, prices, ordering, and delivery. What are you looking for today?';
+            if (/what.*(find|sell|store|website)|about|overview|category|categories|browse/.test(q)) return 'HOME DEPO is your friendly home-improvement store. Browse building chemicals, paints, hardware, curtains & blinds, and wall decor. Choose a category or search products, then open a product to see available details and sizes.';
+            if (/order|cart|buy|checkout|purchase/.test(q)) return 'To order, choose a listed product and size, tap Add to Cart, then open your cart. Enter your name, phone, city, and delivery address, and tap Send Order via WhatsApp. Our team will help confirm the order.';
+            if (/delivery|shipping|charge|price|cost|rate/.test(q)) return 'Prices shown on the website include delivery charges—bilkul fikr na karein 😊 Add your delivery details in the cart and send your order on WhatsApp. For products marked Ask Price, message us for a quote.';
+            if (/payment|jazzcash|bank|iban|account/.test(q)) return 'Open your cart and look under Payment options. Tap “View payment account details” to see JazzCash and bank transfer information. Please share your payment screenshot with our team on WhatsApp.';
+            if (/paint|chemical|sealant|rakson|hardware|blind|curtain|decor|wall|product|size|specification/.test(q)) {
+              const found = Array.from(document.querySelectorAll('article')).find((card) => card.textContent.toLowerCase().includes(q.split(/\s+/).find((word) => word.length > 3) || q));
+              return found ? `I found a product that may help: ${found.querySelector('h3')?.textContent || 'see the product card'}. Open its card for sizes, listed prices, and details. You can also ask our team on WhatsApp.` : 'We have building chemicals, paints, hardware, curtains & blinds, and wall decor. Try the search bar or category buttons to find an item. For product-specific advice, message our team on WhatsApp.';
+            }
+            return 'I can help with products, categories, ordering, payment, and delivery. Try asking “What can I find here?” or “How do I order?” For anything specific, our team is one tap away on WhatsApp.';
+          };
+          const send = (text) => {
+            const value = text.trim();
+            if (!value) return;
+            addBubble(value, 'user');
+            addBubble(answer(value), 'bot');
+          };
+          addBubble('Assalam-o-alaikum! Welcome to HOME DEPO 👋 I can give you a quick tour and help you find products or place an order. What would you like to know?', 'bot');
+          launcher.addEventListener('click', () => { chat.classList.toggle('is-open'); if (chat.classList.contains('is-open')) input.focus(); });
+          chat.querySelector('.hd-assistant-close').addEventListener('click', () => chat.classList.remove('is-open'));
+          chat.querySelector('.hd-assistant-form').addEventListener('submit', (event) => { event.preventDefault(); send(input.value); input.value = ''; input.focus(); });
+          chat.querySelectorAll('.hd-assistant-suggestions button').forEach((button) => button.addEventListener('click', () => send(button.textContent)));
+        };
+
+        const root = document.getElementById('root');
+        new MutationObserver(() => { addPaymentInstructions(); addStoreAssistant(); }).observe(root, { childList: true, subtree: true });
+        addStoreAssistant();
         document.addEventListener('click', async (event) => {
           const button = event.target.closest('[data-copy]');
           if (!button) return;
