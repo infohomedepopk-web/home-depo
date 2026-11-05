@@ -3,32 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HOME DEPO</title>
+    <title>HOME DEPO | Home Improvement Store</title>
     <meta name="description" content="HOME DEPO - An Online Store For Your Home Improvement. RAKSON chemicals, paints, hardware, blinds and decor delivered to your doorstep." />
     <meta property="og:title" content="HOME DEPO - An Online Store For Your Home Improvement" />
     <meta property="og:description" content="HOME DEPO - An Online Store For Your Home Improvement. RAKSON chemicals, paints, hardware, blinds and decor delivered to your doorstep." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#007fff" />
-    <link rel="icon" type="logo-home-depo.jpg" href="./assets/logo-home-depo.jpg" />
+    <meta name="theme-color" content="#0b3d26" />
+    <link rel="icon" type="image/jpeg" href="./assets/logo-home-depo.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      .hd-payment { margin-top: 14px; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; background: #f8faf9; color: #111827; font: 13px/1.5 system-ui, sans-serif; }
-      .hd-payment h3 { margin: 0 0 8px; color: #0b3d26; font-size: 15px; font-weight: 800; }
+      html { scroll-behavior: smooth; }
+      body { background: #f8faf9; }
+      #root { min-height: 100vh; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+      button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #13a163; outline-offset: 3px; }
+      img { color: transparent; }
+      ::selection { background: rgba(19, 161, 99, .2); color: #0b3d26; }
+      @media (prefers-reduced-motion: no-preference) {
+        button, a, article { transition-property: color, background-color, border-color, box-shadow, transform; transition-duration: 180ms; }
+      }
+      .hd-payment { margin-top: 14px; padding: 16px; border: 1px solid #d1e5d8; border-radius: 16px; background: linear-gradient(145deg, #f8fcf9, #eef7f1); color: #111827; font: 13px/1.6 'Plus Jakarta Sans', system-ui, sans-serif; box-shadow: 0 8px 24px rgba(11, 61, 38, .06); }
+      .hd-payment h3 { margin: 0 0 8px; color: #0b3d26; font-size: 16px; font-weight: 800; }
       .hd-payment p { margin: 5px 0; }
-      .hd-payment-method { margin-top: 10px; padding: 10px; border-radius: 9px; background: #fff; border: 1px solid #e5e7eb; }
+      .hd-payment-method { margin-top: 10px; padding: 12px; border-radius: 12px; background: #fff; border: 1px solid #e3ebe5; }
       .hd-payment-title { font-weight: 700; color: #0b3d26; }
-      .hd-payment button { border: 0; border-radius: 6px; padding: 4px 8px; margin-left: 5px; background: #e8f5ee; color: #0b3d26; font-weight: 700; cursor: pointer; }
-      .hd-payment .hd-note { margin-top: 10px; color: #4b5563; }
-      .hd-payment .hd-whatsapp { display: inline-block; margin: 8px 0 0; padding: 9px 12px; border-radius: 8px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
+      .hd-payment button { border: 0; border-radius: 7px; padding: 5px 9px; margin-left: 5px; background: #e8f5ee; color: #0b3d26; font-weight: 700; cursor: pointer; }
+      .hd-payment button:hover { background: #d3ecdd; }
+      .hd-payment .hd-note { margin-top: 12px; color: #4b5563; }
+      .hd-payment .hd-whatsapp { display: inline-block; margin: 8px 0 0; padding: 10px 14px; border-radius: 9px; background: #25d366; color: white; text-decoration: none; font-weight: 700; }
+      .hd-payment .hd-whatsapp:hover { background: #1fb95a; }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-900 antialiased selection:bg-[#13A163]/20 selection:text-[#007fff]">
     <div id="root"></div>
     <script>
       (() => {
+        // Keep order messages consistent with the prices shown on the website.
+        const nativeOpen = window.open.bind(window);
+        window.open = (url, target, features) => {
+          try {
+            const link = new URL(url, window.location.href);
+            if (link.hostname === 'wa.me' && link.searchParams.has('text')) {
+              let message = link.searchParams.get('text');
+              message = message.replace(/\s\+\sDelivery\b/gi, ' (delivery charges included)');
+              message = message.replace(/Please confirm availability and delivery charges\.?\s*/gi, 'Website par listed price delivery charges ke sath hai—bilkul fikr na karein.');
+              message = message.replace(/Could you please share the current price, specifications, and delivery details\?/gi, 'Please share the product specifications. Website par listed prices delivery charges ke sath hain—bilkul fikr na karein.');
+              message = message.replace(/Please share delivery time and payment process\./gi, 'Website par listed price delivery charges ke sath hai—bilkul fikr na karein. Please share the delivery time and payment process.');
+              link.searchParams.set('text', message);
+              url = link.toString();
+            }
+          } catch { /* Leave non-WhatsApp links unchanged. */ }
+          return nativeOpen(url, target, features);
+        };
+
         const addPaymentInstructions = () => {
           const root = document.getElementById('root');
           if (!root || root.querySelector('.hd-payment')) return;
@@ -55,7 +85,7 @@
               <p>Receiver: Khalid Mehmood</p>
               <p>Shop No 8, Sadiq Plaza, PWD Housing Society, Islamabad.</p>
             </div>
-            <p class="hd-note">Payment bhejne ke baad screenshot WhatsApp par share karein. Hamari team payment verify karke aapka order confirm aur dispatch karegi. Delivery charges team confirm karegi.</p>
+            <p class="hd-note">Payment bhejne ke baad screenshot WhatsApp par share karein. Hamari team payment verify karke aapka order confirm aur dispatch karegi. Website par listed prices delivery charges ke sath hain—bilkul fikr na karein.</p>
             <a class="hd-whatsapp" href="https://wa.me/923421234789?text=Hello%20HOME%20DEPO%2C%20I%20have%20sent%20the%20payment.%20I%20will%20share%20the%20payment%20screenshot%20here.%20Please%20confirm%20my%20order." target="_blank" rel="noopener noreferrer">Send payment screenshot on WhatsApp</a>
           `;
           subtotal.insertAdjacentElement('afterend', panel);
